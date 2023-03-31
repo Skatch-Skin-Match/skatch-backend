@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14.2
+    restart: always
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_DB: TestDB6
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test

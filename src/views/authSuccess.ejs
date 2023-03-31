@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
+    body{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #E2E2E2;
+      font-family: 'Open Sans';
+    }
+    .title-xs{
+    color: darkslategray;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 20px -5px;
+    text-align: center;
+    }
+    .align-center{
+      text-align: center;
+    }
+    .loader--ring {
+    display: inline-block;
+    position: relative;
+    height: 64px;
+    width: 64px;
+}
+.loader--ring div {
+    display: block;
+    position: absolute;
+    animation: loader--ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border: 6px solid white;
+    border-radius: 50%;
+    box-sizing: border-box;
+    margin: 6px;
+    height: 51px;
+    width: 51px;
+    border-color: #00539F transparent transparent transparent;
+}
+.loader--ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.loader--ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.loader--ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes loader--ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+  </style>
+</head>
+<body>
+        <div class="main">
+          <div class="loader--ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div class="align-center">
+            <p class="title-xs">Logging In...</p>
+          </div>
+        </div>
+</body>
+<script>
+  var profile = <%- JSON.stringify(profile)  %>
+  window.postMessage({'type': 'profile', 'profile': profile}, '*')
+  console.log("hiiiiiiiiiiiiii",window);
+  // window.close();
+</script>
+</html>
