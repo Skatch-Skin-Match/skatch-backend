@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >
+  Template description
+  Last Modified: 
+  Author: Sarthak Shah
+
+Parameters:
+  EnvironmentName:
+    Description: Environment Name
+    Type: String
+  ProjectName:
+    Description: Project Name
+    Type: String
+    Default: "Skatch"
+  ContainerPort:
+    Type: Number
+    Default: "3000"
+  HealthCheckPath:
+    Type: String
+    Default: /
+  ServiceName:
+    Type: String
+    Default: "SkatchService"
+  CpuValue:
+    Type: String
+    Default: 512
+    # 256 (.25 vCPU) - Available memory values: 0.5GB, 1GB, 2GB
+    # 512 (.5 vCPU) - Available memory values: 1GB, 2GB, 3GB, 4GB
+    # 1024 (1 vCPU) - Available memory values: 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB
+    # 2048 (2 vCPU) - Available memory values: Between 4GB and 16GB in 1GB increments
+    # 4096 (4 vCPU) - Available memory values: Between 8GB and 30GB in 1GB increments  
+  MemoryValue:
+    Type: String
+    Default: 1GB
+    # 0.5GB, 1GB, 2GB - Available cpu values: 256 (.25 vCPU)
+    # 1GB, 2GB, 3GB, 4GB - Available cpu values: 512 (.5 vCPU)
+    # 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB - Available cpu values: 1024 (1 vCPU)
+    # Between 4GB and 16GB in 1GB increments - Available cpu values: 2048 (2 vCPU)
+    # Between 8GB and 30GB in 1GB increments - Available cpu values: 4096 (4 vCPU)
+  AutoScalingTargetValue:
+    Type: Number
+    Default: 6
+  ImageName:
+   Type: String
+  VpcId:
+   Type: String 
+  SubnetIds:
+   Type: String
+  SubnetA:
+    Description: SubnetID to create the stack
+    Type: String
+  SubnetB:
+    Description: SubnetID to create the stack
+    Type: String
+  SubnetC:
+    Description: SubnetID to create the stack
+    Type: String 
+  SubnetD:
+    Description: SubnetID to create the stack
+    Type: String    
+
+
+Resources:
+  SecretsManager:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Secrets Manager for Skatch App
+      SecretString: '{ "NODE_ENV":"production", "SKATCH_JWT_SECRET": "1", "LOG_FORMAT": "dev", "LOG_DIR":"../logs","AWS_S3_BUCKET_FOR_PROFILE_PIC":"skatch-profile-pic", "CLOUDFRONT_PROFILE_PIC_URL": "https://d30ukgyabounne.cloudfront.net"}'
+      Name: !Sub "${ProjectName}/${ServiceName}"
+  SkatchRDS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "https://skatchapp-devops-us-west-2-assets.s3.amazonaws.com/templates/rds.yml"
+      TimeoutInMinutes: 15
+      Parameters:
+        VpcId: !Ref VpcId
+        SubnetIds: !Ref SubnetIds
+        EnvironmentName: !Ref EnvironmentName
+        DBName: "skatckdb"
+        DBMasterUsername: "skatchdbname"
+        ProjectName: "stack"
+        SubnetA: !Ref SubnetA
+        SubnetB: !Ref SubnetB
+        SubnetC: !Ref SubnetC
+        SubnetD: !Ref SubnetD
+
+        
+  
+  StackBackend:
+    DependsOn: SkatchRDS
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "https://skatch-devops-us-west-2-assets.s3.amazonaws.com/templates/fargate.yml"
+      TimeoutInMinutes: 15
+      Parameters:
+        EnvironmentName: !Ref EnvironmentName
+        ServiceName: !Ref ServiceName
+        ContainerPort: !Ref ContainerPort
+        HealthCheckPath: !Ref HealthCheckPath
+        CpuValue: 512
+        MemoryValue: 1GB
+        MinContainers: 1
+        MaxContainers: 1
+        AutoScalingTargetValue: !Ref AutoScalingTargetValue
+        SecretName: "Skatch_SECRETS"
+        SecretArn: !Ref SecretsManager
+        Image: !Ref ImageName
+        VpcId: !Ref VpcId
+        SubnetIds: !Ref SubnetIds
+        DBSecretsManagerAccessPolicy:
+          Fn::GetAtt:
+            - SkatchRDS
+            - Outputs.DBSecretsManagerAccessPolicy
+        DBSecretName: !Sub "SKATCH_DB_SECRETS"
+        DBSecretArn: 
+          Fn::GetAtt:
+            - SkatchRDS
+            - Outputs.DBSecretsManagerArn
+        SubnetA: !Ref SubnetA
+        SubnetB: !Ref SubnetB
+        SubnetC: !Ref SubnetC
+        SubnetD: !Ref SubnetD    

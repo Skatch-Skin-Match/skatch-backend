@@ -1,0 +1,41 @@
+name: Deploy Production App
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  host: ${{ secrets.SKATCH_HOST }}
+  port: ${{ secrets.SKATCH_PORT }}
+  dbname: ${{ secrets.SKATCH_DBNAME }}
+  username: ${{ secrets.SKATCH_USERNAME }}
+  password: ${{ secrets.SKATCH_PASSWORD }}
+  APP_ENV: ${{ secrets.SKATCH_APP_ENV }}
+permissions:
+  contents: read
+jobs:
+  DB-Migration:
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Print all the github actions events
+      #   uses: hmarr/debug-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3  
+      - name: Update Production DB Migration
+        run: |
+          npm i
+          npm run db:migration  
+
+  production:
+    uses: vshsolutions/spread-infra/.github/workflows/production.nodejs.ecs.yml@main
+    with:
+      applicationName: Skatch-App
+      region: 'us-west-2'
+      tags: 'Environment=Production ApplicationName=Skatch-App Name=Skatch-App CreatedBy=amit.heda'
+      parameters: 'EnvironmentName=Production'
+      environment: 'Production'
+      repositoryName: 'skatch/backend/production/app'
+      deploy: true
+      #BUILD_ARGS: ''
+      # runsOn: "self-hosted"
+    secrets: inherit
