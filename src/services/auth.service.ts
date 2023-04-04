@@ -22,8 +22,12 @@ class AuthService {
           { id: 5, colorCode: '#A96C4F', colorName: 'brown', hsv: ['19°, 53%, 66%'] },
           { id: 6, colorCode: '#704733', colorName: 'black', hsv: ['20°, 54%, 44%'] },
         ],
-        selectedColor: {},
-        // history: [{ id: 0, colorName: '', hsv: [''] }],
+        selectedColor: {
+          id: 6,
+          colorCode: '#704733',
+          colorName: 'black',
+          hsv: ['20°, 54%, 44%'],
+        },        // history: [{ id: 0, colorName: '', hsv: [''] }],
         history: [],
       };
 
