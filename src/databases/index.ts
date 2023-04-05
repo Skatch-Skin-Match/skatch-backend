@@ -13,7 +13,7 @@ export const dbOptions: Options<PostgreSqlDriver> = {
   user: process.env.username || JSON.parse(process.env.SKATCH_DB_SECRETS).username,
   host: process.env.host || JSON.parse(process.env.SKATCH_DB_SECRETS).host,
   port: parseInt(process.env.port) || parseInt(JSON.parse(process.env.SKATCH_DB_SECRETS).port || "5432"),
-  debug: process.env.APP_ENV || JSON.parse(process.env.Skatch_SECRETS).NODE_ENV === "development" ? true : false,
+  debug: process.env.APP_ENV || JSON.parse(process.env.SKATCH_SECRETS).NODE_ENV === "development" ? true : false,
   migrations: {
     tableName: 'mikro_orm_migrations',
     allOrNothing: true,

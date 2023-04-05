@@ -61,7 +61,7 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(morgan(JSON.parse(process.env.Skatch_SECRETS).LOG_FORMAT, { stream }));
+    this.app.use(morgan(JSON.parse(process.env.SKATCH_SECRETS).LOG_FORMAT, { stream }));
     this.app.use(cors({ origin: '*', credentials: true }));
     this.app.use(hpp());
     this.app.use(helmet());

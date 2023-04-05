@@ -8,7 +8,7 @@ export function generateAccessToken(data: User) {
         iat: new Date().getTime(), // current time
         exp: new Date().setDate(new Date().getDate() + 1), // current time + 1 day ahead
       },
-      JSON.parse(process.env.Skatch_SECRETS).SKATCH_JWT_SECRET,
+      JSON.parse(process.env.SKATCH_SECRETS).SKATCH_JWT_SECRET,
     );
     return token;
   } catch (error) {

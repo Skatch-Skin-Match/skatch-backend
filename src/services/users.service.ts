@@ -83,11 +83,11 @@ class UserService {
 
   public async uploadDataToDb(userId, s3: S3, originalKey,imageName) {
     const params = {
-      Bucket:JSON.parse(process.env.Skatch_SECRETS).AWS_S3_BUCKET_FOR_PROFILE_PIC,
+      Bucket:JSON.parse(process.env.SKATCH_SECRETS).AWS_S3_BUCKET_FOR_PROFILE_PIC,
       Key: originalKey,
     };
     // const originalUrl: string = `${process.env.CLOUDFRONT_PROFILE_PIC_URL}/${originalKey}`;
-    const originalUrl: string = `${JSON.parse(process.env.Skatch_SECRETS).CLOUDFRONT_PROFILE_PIC_URL}/${originalKey}`;
+    const originalUrl: string = `${JSON.parse(process.env.SKATCH_SECRETS).CLOUDFRONT_PROFILE_PIC_URL}/${originalKey}`;
    
 
     // const originalUrl: string = `https://d30ukgyabounne.cloudfront.net/face.jpeg`;
@@ -163,7 +163,7 @@ class UserService {
     
       try {
         const params = {
-          Bucket: JSON.parse(process.env.Skatch_SECRETS).AWS_S3_BUCKET_FOR_PROFILE_PIC,
+          Bucket: JSON.parse(process.env.SKATCH_SECRETS).AWS_S3_BUCKET_FOR_PROFILE_PIC,
           Key: `${imageName}.${mimetype}`,
             Body: resizeImage,
           // Body: fileContent,

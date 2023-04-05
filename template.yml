@@ -107,7 +107,7 @@ Resources:
         MinContainers: 1
         MaxContainers: 1
         AutoScalingTargetValue: !Ref AutoScalingTargetValue
-        SecretName: "Skatch_SECRETS"
+        SecretName: "SKATCH_SECRETS"
         SecretArn: !Ref SecretsManager
         Image: !Ref ImageName
         VpcId: !Ref VpcId

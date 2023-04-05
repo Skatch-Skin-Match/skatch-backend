@@ -25,7 +25,7 @@ const authMiddlewareController = passport => {
   passport.use(
     new JWTstrategy(
       {
-        secretOrKey:  JSON.parse(process.env.Skatch_SECRETS).SKATCH_JWT_SECRET,
+        secretOrKey:  JSON.parse(process.env.SKATCH_SECRETS).SKATCH_JWT_SECRET,
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
       },
       async (token: any, done: any) => {
