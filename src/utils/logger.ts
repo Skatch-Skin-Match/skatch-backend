@@ -4,7 +4,7 @@ import winston from 'winston';
 import winstonDaily from 'winston-daily-rotate-file';
 
 // logs dir
-const logDir: string = join(__dirname, process.env.LOG_DIR);
+const logDir: string = join(__dirname, JSON.parse(process.env.Skatch_SECRETS).LOG_DIR);
 
 if (!existsSync(logDir)) {
   mkdirSync(logDir);

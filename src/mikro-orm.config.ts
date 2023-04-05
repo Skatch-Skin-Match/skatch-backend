@@ -9,12 +9,12 @@ const dbOptions: Options<PostgreSqlDriver> = {
   type: 'postgresql',
   entities: [BaseEntity, User],
 
-  dbName: process.env.SKATCH_DB_DATABASE,
-  password: process.env.SKATCH_DB_PASSWORD,
-  user: process.env.SKATCH_DB_USERNAME,
-  host: process.env.SKATCH_DB_HOST,
-  port: parseInt(process.env.SKATCH_DB_PORT || '5432'),
-  debug: process.env.NODE_ENV === 'development' ? true : false,
+  dbName: process.env.dbname|| JSON.parse(process.env.SKATCH_DB_SECRETS).dbname,
+  password:  process.env.password || JSON.parse(process.env.SKATCH_DB_SECRETS).password  ,
+  user: process.env.username || JSON.parse(process.env.SKATCH_DB_SECRETS).username,
+  host: process.env.host || JSON.parse(process.env.SKATCH_DB_SECRETS).host,
+  port: parseInt(process.env.port) || parseInt(JSON.parse(process.env.SKATCH_DB_SECRETS).port || "5432"),
+  debug: process.env.APP_ENV || JSON.parse(process.env.Skatch_SECRETS).NODE_ENV === "development" ? true : false,
   migrations: {
     tableName: 'mikro_orm_migrations',
     allOrNothing: true,

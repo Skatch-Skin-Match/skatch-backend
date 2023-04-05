@@ -9,7 +9,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
     const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
 
     if (Authorization) {
-      const secretKey: string = process.env.SKATCH_JWT_SECRET;
+      const secretKey: string = JSON.parse(process.env.Skatch_SECRETS).SKATCH_JWT_SECRET;
       const verificationResponse: any = verify(Authorization, secretKey);
       console.log('verificationResponse', verificationResponse);
 
