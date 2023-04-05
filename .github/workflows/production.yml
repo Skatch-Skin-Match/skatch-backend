@@ -14,17 +14,17 @@ env:
 permissions:
   contents: read
 jobs:
-  # DB-Migration:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     # - name: Print all the github actions events
-  #     #   uses: hmarr/debug-action@v2
-  #     - name: Checkout
-  #       uses: actions/checkout@v3  
-  #     - name: Update Production DB Migration
-  #       run: |
-  #         npm i
-  #         npm run db:migration  
+  DB-Migration:
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Print all the github actions events
+      #   uses: hmarr/debug-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3  
+      - name: Update Production DB Migration
+        run: |
+          npm i
+          npm run db:migration  
 
   production:
     uses: Skatch-Skin-Match/skatch-aws-infrastructure/.github/workflows/production.nodejs.ecs.yml@main
