@@ -5,29 +5,29 @@ on:
     branches: [ "main" ]
 
 env:
-  host: ${{ secrets.SKATCH_HOST }}
-  port: ${{ secrets.SKATCH_PORT }}
-  dbname: ${{ secrets.SKATCH_DBNAME }}
-  username: ${{ secrets.SKATCH_USERNAME }}
-  password: ${{ secrets.SKATCH_PASSWORD }}
+  host: ${{ secrets.SKATCH_DB_HOST }}
+  port: ${{ secrets.SKATCH_DB_PORT }}
+  dbname: ${{ secrets.SKATCH_DB_NAME }}
+  username: ${{ secrets.SKATCH_DB_USERNAME }}
+  password: ${{ secrets.SKATCH_DB_PASSWORD }}
   APP_ENV: ${{ secrets.SKATCH_APP_ENV }}
 permissions:
   contents: read
 jobs:
-  DB-Migration:
-    runs-on: ubuntu-latest
-    steps:
-      # - name: Print all the github actions events
-      #   uses: hmarr/debug-action@v2
-      - name: Checkout
-        uses: actions/checkout@v3  
-      - name: Update Production DB Migration
-        run: |
-          npm i
-          npm run db:migration  
+  # DB-Migration:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # - name: Print all the github actions events
+  #     #   uses: hmarr/debug-action@v2
+  #     - name: Checkout
+  #       uses: actions/checkout@v3  
+  #     - name: Update Production DB Migration
+  #       run: |
+  #         npm i
+  #         npm run db:migration  
 
   production:
-    uses: vshsolutions/spread-infra/.github/workflows/production.nodejs.ecs.yml@main
+    uses: Skatch-Skin-Match/skatch-aws-infrastructure/.github/workflows/production.nodejs.ecs.yml@main
     with:
       applicationName: Skatch-App
       region: 'us-west-2'
@@ -37,5 +37,4 @@ jobs:
       repositoryName: 'skatch/backend/production/app'
       deploy: true
       #BUILD_ARGS: ''
-      # runsOn: "self-hosted"
     secrets: inherit
