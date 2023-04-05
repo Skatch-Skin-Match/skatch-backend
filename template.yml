@@ -60,6 +60,11 @@ Parameters:
     Description: SubnetID to create the stack
     Type: String    
 
+Mappings:
+  ConfigMap:
+    Production:
+      DBName: "complexiondb"
+      DBMasterUsername: "complexionss" 
 
 Resources:
   SecretsManager:
@@ -68,30 +73,29 @@ Resources:
       Description: Secrets Manager for Skatch App
       SecretString: '{ "NODE_ENV":"production", "SKATCH_JWT_SECRET": "1", "LOG_FORMAT": "dev", "LOG_DIR":"../logs","AWS_S3_BUCKET_FOR_PROFILE_PIC":"skatch-profile-pic", "CLOUDFRONT_PROFILE_PIC_URL": "https://d30ukgyabounne.cloudfront.net"}'
       Name: !Sub "${ProjectName}/${ServiceName}"
+
   SkatchRDS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "https://skatchapp-devops-us-west-2-assets.s3.amazonaws.com/templates/rds.yml"
+      TemplateURL: "https://skatch-app-devops-us-west-2-assets.s3.amazonaws.com/templates/rds.yml"
       TimeoutInMinutes: 15
       Parameters:
         VpcId: !Ref VpcId
         SubnetIds: !Ref SubnetIds
         EnvironmentName: !Ref EnvironmentName
-        DBName: "skatckdb"
-        DBMasterUsername: "skatchdbname"
-        ProjectName: "stack"
+        DBName: !FindInMap [ConfigMap, !Ref EnvironmentName, DBName]
+        DBMasterUsername: !FindInMap [ConfigMap, !Ref EnvironmentName, DBMasterUsername]
+        ProjectName: !Ref ProjectName
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
         SubnetC: !Ref SubnetC
         SubnetD: !Ref SubnetD
-
-        
   
   StackBackend:
     DependsOn: SkatchRDS
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "https://skatch-devops-us-west-2-assets.s3.amazonaws.com/templates/fargate.yml"
+      TemplateURL: "https://skatch-app-devops-us-west-2-assets.s3.amazonaws.com/templates/fargate.yml"
       TimeoutInMinutes: 15
       Parameters:
         EnvironmentName: !Ref EnvironmentName
