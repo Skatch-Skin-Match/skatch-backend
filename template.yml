@@ -74,6 +74,28 @@ Resources:
       SecretString: '{ "NODE_ENV":"production", "SKATCH_JWT_SECRET": "1", "LOG_FORMAT": "dev", "LOG_DIR":"../logs","AWS_S3_BUCKET_FOR_PROFILE_PIC":"skatch-profile-pic", "CLOUDFRONT_PROFILE_PIC_URL": "https://d30ukgyabounne.cloudfront.net"}'
       Name: !Sub "${ProjectName}/${ServiceName}"
 
+  # A role for the containers
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["", [!Ref ServiceName, TaskRole]]
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub ${ServiceName}-S3Policy
+          PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Action:
+                   - s3:*
+                  Effect: Allow
+                  Resource: "*"     
+                  
   SkatchRDS:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -124,4 +146,5 @@ Resources:
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
         SubnetC: !Ref SubnetC
-        SubnetD: !Ref SubnetD    
+        SubnetD: !Ref SubnetD
+        TaskRole: !GetAtt TaskRole.Arn  
