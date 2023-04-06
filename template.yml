@@ -74,27 +74,27 @@ Resources:
       SecretString: '{ "NODE_ENV":"production", "SKATCH_JWT_SECRET": "1", "LOG_FORMAT": "dev", "LOG_DIR":"../logs","AWS_S3_BUCKET_FOR_PROFILE_PIC":"skatch-profile-pic", "CLOUDFRONT_PROFILE_PIC_URL": "https://d30ukgyabounne.cloudfront.net"}'
       Name: !Sub "${ProjectName}/${ServiceName}"
 
-  # A role for the containers
-  TaskRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Join ["", [!Ref ServiceName, TaskRole]]
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-            Action: "sts:AssumeRole"
-      Path: "/"
-      Policies:
-        - PolicyName: !Sub ${ServiceName}-S3Policy
-          PolicyDocument:
-              Version: 2012-10-17
-              Statement:
-                - Action:
-                   - s3:*
-                  Effect: Allow
-                  Resource: "*"     
+  # # A role for the containers
+  # TaskRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: !Join ["", [!Ref ServiceName, TaskRole]]
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: ecs-tasks.amazonaws.com
+  #           Action: "sts:AssumeRole"
+  #     Path: "/"
+  #     Policies:
+  #       - PolicyName: !Sub ${ServiceName}-S3Policy
+  #         PolicyDocument:
+  #             Version: 2012-10-17
+  #             Statement:
+  #               - Action:
+  #                  - s3:*
+  #                 Effect: Allow
+  #                 Resource: "*"     
                   
   SkatchRDS:
     Type: AWS::CloudFormation::Stack
@@ -113,38 +113,38 @@ Resources:
         SubnetC: !Ref SubnetC
         SubnetD: !Ref SubnetD
   
-  StackBackend:
-    DependsOn: SkatchRDS
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: "https://skatch-app-devops-us-west-2-assets.s3.amazonaws.com/templates/fargate.yml"
-      TimeoutInMinutes: 15
-      Parameters:
-        EnvironmentName: !Ref EnvironmentName
-        ServiceName: !Ref ServiceName
-        ContainerPort: !Ref ContainerPort
-        HealthCheckPath: !Ref HealthCheckPath
-        CpuValue: 512
-        MemoryValue: 1GB
-        MinContainers: 1
-        MaxContainers: 1
-        AutoScalingTargetValue: !Ref AutoScalingTargetValue
-        SecretName: "SKATCH_SECRETS"
-        SecretArn: !Ref SecretsManager
-        Image: !Ref ImageName
-        VpcId: !Ref VpcId
-        SubnetIds: !Ref SubnetIds
-        DBSecretsManagerAccessPolicy:
-          Fn::GetAtt:
-            - SkatchRDS
-            - Outputs.DBSecretsManagerAccessPolicy
-        DBSecretName: !Sub "SKATCH_DB_SECRETS"
-        DBSecretArn: 
-          Fn::GetAtt:
-            - SkatchRDS
-            - Outputs.DBSecretsManagerArn
-        SubnetA: !Ref SubnetA
-        SubnetB: !Ref SubnetB
-        SubnetC: !Ref SubnetC
-        SubnetD: !Ref SubnetD
-        TaskRole: !GetAtt TaskRole.Arn  
+  # StackBackend:
+  #   DependsOn: SkatchRDS
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: "https://skatch-app-devops-us-west-2-assets.s3.amazonaws.com/templates/fargate.yml"
+  #     TimeoutInMinutes: 15
+  #     Parameters:
+  #       EnvironmentName: !Ref EnvironmentName
+  #       ServiceName: !Ref ServiceName
+  #       ContainerPort: !Ref ContainerPort
+  #       HealthCheckPath: !Ref HealthCheckPath
+  #       CpuValue: 512
+  #       MemoryValue: 1GB
+  #       MinContainers: 1
+  #       MaxContainers: 1
+  #       AutoScalingTargetValue: !Ref AutoScalingTargetValue
+  #       SecretName: "SKATCH_SECRETS"
+  #       SecretArn: !Ref SecretsManager
+  #       Image: !Ref ImageName
+  #       VpcId: !Ref VpcId
+  #       SubnetIds: !Ref SubnetIds
+  #       DBSecretsManagerAccessPolicy:
+  #         Fn::GetAtt:
+  #           - SkatchRDS
+  #           - Outputs.DBSecretsManagerAccessPolicy
+  #       DBSecretName: !Sub "SKATCH_DB_SECRETS"
+  #       DBSecretArn: 
+  #         Fn::GetAtt:
+  #           - SkatchRDS
+  #           - Outputs.DBSecretsManagerArn
+  #       SubnetA: !Ref SubnetA
+  #       SubnetB: !Ref SubnetB
+  #       SubnetC: !Ref SubnetC
+  #       SubnetD: !Ref SubnetD
+  #       TaskRole: !GetAtt TaskRole.Arn  
